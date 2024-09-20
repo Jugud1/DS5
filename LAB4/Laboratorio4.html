@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<title> LABORATORIO4 </title>
+
+<HEADer>LABORATORIO4</HEADer>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrada Dinámica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        #output {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Escribe algo:</h1>
+    <input type="text" id="inputField" placeholder="Escribe aquí...">
+    <span id="output"></span> <!-- Cambiado a un span -->
+
+    <script>
+        const inputField = document.getElementById('inputField');
+        const output = document.getElementById('output');
+
+        inputField.addEventListener('input', () => {
+            const inputValue = inputField.value; // Obtener el valor del input
+            const reversedValue = inputValue.split('').reverse().join(''); // Invertir el valor
+            output.textContent = reversedValue; // Mostrar el valor invertido
+        });
+    </script>
+</body>
+</html>
