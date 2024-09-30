@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario Dinámico</title>
+    <style>
+        #respuesta {
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Formulario de Color Dinámico</h1>
+    
+    <form id="miFormulario">
+        <label for="texto">Escribe tu respuesta:</label>
+        <input type="text" id="texto" placeholder="Escribe algo...">
+        
+        <label for="color">Selecciona un color:</label>
+        <select id="color">
+            <option value="black">Negro</option>
+            <option value="red">Rojo</option>
+            <option value="green">Verde</option>
+            <option value="blue">Azul</option>
+            <option value="orange">Naranja</option>
+        </select>
+    </form>
+
+    <div id="respuesta">
+        <span id="textoRespuesta"></span>
+    </div>
+
+    <script>
+        const textoInput = document.getElementById('texto');
+        const colorSelect = document.getElementById('color');
+        const textoRespuesta = document.getElementById('textoRespuesta');
+
+        // Actualizar el texto y el color de forma dinámica
+        function actualizarRespuesta() {
+            textoRespuesta.textContent = textoInput.value;
+            textoRespuesta.style.color = colorSelect.value;
+        }
+
+        // Escuchar eventos de entrada y cambio
+        textoInput.addEventListener('input', actualizarRespuesta);
+        colorSelect.addEventListener('change', actualizarRespuesta);
+    </script>
+    
+</body>
+</html>
