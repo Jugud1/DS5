@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bar Chart de Candidatos</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        #candidatos-lista {
+            margin-top: 20px;
+        }
+
+        .candidato {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+
+        .bar {
+            height: 20px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Gestión de Candidatos</h1>
+    <div>
+        <input type="text" id="nombre" placeholder="Nombre del candidato">
+        <select id="color">
+            <option value="#FF5733">Rojo</option>
+            <option value="#33FF57">Verde</option>
+            <option value="#3357FF">Azul</option>
+            <option value="#FFD733">Amarillo</option>
+            <option value="#D733FF">Púrpura</option>
+            <option value="#FFFFFF">Aleatorio</option>
+        </select>
+        <button id="agregar">Agregar Candidato</button>
+    </div>
+    <div>
+        <button id="mostrar-grafico">Mostrar Gráfico</button>
+    </div>
+    <div id="candidatos-lista"></div>
+    <canvas id="barChart" width="400" height="200"></canvas>
+    <script>
+        const CandidatosModule = (() => {
+            let candidatos = [];
+
+            const agregarCandidato = (nombre, color) => {
+                const candidato = { nombre, color, puntos: 0 };
+                candidatos.push(candidato);
+                renderCandidatos();
+            };
+
+            const eliminarCandidato = (nombre) => {
+                candidatos = candidatos.filter(c => c.nombre !== nombre);
+                renderCandidatos();
+            };
+
+            const agregarPuntos = (nombre) => {
+                const candidato = candidatos.find(c => c.nombre === nombre);
+                if (candidato) {
+                    candidato.puntos += 1;
+                    renderCandidatos();
+                }
+            };
+
+            const renderCandidatos = () => {
+                const lista = document.getElementById('candidatos-lista');
+                lista.innerHTML = '';
+                candidatos.forEach(c => {
+                    const div = document.createElement('div');
+                    div.className = 'candidato';
+                    div.style.color = c.color;
+                    div.innerHTML = `
+                        ${c.nombre} <span>${c.puntos} puntos</span>
+                        <button class="votar" data-nombre="${c.nombre}">Votar</button>
+                        <button class="eliminar" data-nombre="${c.nombre}">Eliminar</button>
+                    `;
+                    lista.appendChild(div);
+                });
+                agregarEventListeners();
+            };
+
+            const agregarEventListeners = () => {
+                const botonesVotar = document.querySelectorAll('.votar');
+                botonesVotar.forEach(boton => {
+                    boton.addEventListener('click', (e) => {
+                        agregarPuntos(e.target.dataset.nombre);
+                    });
+                });
+
+                const botonesEliminar = document.querySelectorAll('.eliminar');
+                botonesEliminar.forEach(boton => {
+                    boton.addEventListener('click', (e) => {
+                        eliminarCandidato(e.target.dataset.nombre);
+                    });
+                });
+            };
+
+            const mostrarGrafico = () => {
+                const canvas = document.getElementById('barChart');
+                const ctx = canvas.getContext('2d');
+                const totalPuntos = candidatos.reduce((sum, c) => sum + c.puntos, 0);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height); // Limpiar canvas
+
+                if (totalPuntos === 0) return; // No dibujar si no hay puntos
+
+                candidatos.forEach((c, index) => {
+                    const porcentaje = (c.puntos / totalPuntos) * 100 || 0;
+                    const altura = (canvas.height * porcentaje) / 100;
+                    ctx.fillStyle = c.color;
+                    ctx.fillRect(50 * index, canvas.height - altura, 40, altura);
+                    ctx.fillText(`${c.nombre}: ${Math.round(porcentaje)}%`, 50 * index, canvas.height - altura - 5);
+                });
+            };
+
+            return {
+                agregarCandidato,
+                agregarPuntos,
+                mostrarGrafico
+            };
+        })();
+
+        document.getElementById('agregar').addEventListener('click', () => {
+            const nombre = document.getElementById('nombre').value;
+            const color = document.getElementById('color').value;
+            if (nombre) {
+                CandidatosModule.agregarCandidato(nombre, color);
+                document.getElementById('nombre').value = '';
+            }
+        });
+
+        document.getElementById('mostrar-grafico').addEventListener('click', () => {
+            CandidatosModule.mostrarGrafico();
+        });
+    </script>
+</body>
+</html>
